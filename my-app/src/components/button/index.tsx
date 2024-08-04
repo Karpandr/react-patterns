@@ -1,8 +1,11 @@
 import "./style.scss";
 
-export const Button = ({ onClick, children }: {onClick: () => void, children?: string}) => {
+import { ButtonProps } from "./types";
 
-	return (
-		<button className="button" onClick={onClick}>{children}</button>
-	);
+export const Button = ({ onClick, children }: ButtonProps) => {
+    return (
+        <button className="button" onClick={onClick}>
+            {children}
+        </button>
+    );
 };
