@@ -55,7 +55,7 @@ const Form = ({ onUserAddition }: FormProps) => {
             <div>
                 <label>
                     Website:
-                    <input type="email" value={website} onChange={handlewebsiteChange} />
+                    <input type="text" value={website} onChange={handlewebsiteChange} />
                 </label>
             </div>
             <button className="form-container__button" type="submit">Submit</button>

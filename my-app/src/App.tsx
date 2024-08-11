@@ -31,23 +31,15 @@ export default function App() {
     return (
         <div className="App">
             <Tabs onChange={setTabForm}/>
-            {!tabForm && [...users, ...moreUsers].map((user) =>
-                <MemberCard 
-                    name={user.name}
-                    phone={user.phone}
-                    username={user.username}
-                    website={user.website}
-                />
-            )}
-            {!tabForm && <ButtonWithLabel onClick={onButtonClick}>more users</ButtonWithLabel>}
-            {tabForm && <Form onUserAddition={handleUserAddition} />}
+            {tabForm
+                ? <Form onUserAddition={handleUserAddition} /> 
+                : <>
+                    {[...users, ...moreUsers].map(user => <MemberCard {...user} />)}
+                    <ButtonWithLabel onClick={onButtonClick}>more users</ButtonWithLabel>
+                </>
+            }
             {addedUser && (
-                <MemberCard
-                    name={addedUser.name}
-                    phone={addedUser.phone}
-                    username={addedUser.username}
-                    website={addedUser.website}
-                />
+                <MemberCard {...addedUser} />
             )}
         </div>
     );

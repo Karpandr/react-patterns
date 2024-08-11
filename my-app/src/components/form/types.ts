@@ -1,3 +1,5 @@
+import { UserProps } from "../memberCard/types";
+
 export interface FormProps {
-    onUserAddition: (user: any) => void; // Принимаем функцию для обновления состояния верхнего компонента
+    onUserAddition: (user: UserProps) => void; // Принимаем функцию для обновления состояния верхнего компонента
 }
