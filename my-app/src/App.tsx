@@ -7,42 +7,40 @@ import Form from "./components/form";
 import { Tabs } from "./components/tabs";
 
 export default function App() {
-  const [users, setUsers] = useState<UserProps[]>([]);
-  const [moreUsers, setMoreUsers] = useState<UserProps[]>([]);
-  const [addedUser, setAddedUser] = useState<UserProps | null>(null);
-  const [tabForm, setTabForm] = useState(true);
+    const [users, setUsers] = useState<UserProps[]>([]);
+    const [moreUsers, setMoreUsers] = useState<UserProps[]>([]);
+    const [addedUser, setAddedUser] = useState<UserProps | null>(null);
+    const [tabForm, setTabForm] = useState(true);
 
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((res) => setUsers(res));
-  }, []);
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then((response) => response.json())
+            .then((res) => setUsers(res));
+    }, []);
 
-  const onButtonClick = () => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-    .then((response) => response.json())
-    .then((res) => setMoreUsers(res));
-  };
+    const onButtonClick = () => {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then((response) => response.json())
+            .then((res) => setMoreUsers(res));
+    };
 
-  const handleUserAddition = (user: UserProps) => {
-    setAddedUser(user);
-};
+    const handleUserAddition = (user: UserProps) => {
+        setAddedUser(user);
+    };
 
-  return (
-    <div className="App">
-      <Tabs onChange={setTabForm}/>
-      {!tabForm && users.map((user) => <MemberCard name={user.name} phone={user.phone} username={user.username} website={user.website} />)}
-      {!tabForm && moreUsers.map((user) => <MemberCard name={user.name} phone={user.phone} username={user.username} website={user.website} />)}
-      {!tabForm && <ButtonWithLabel onClick={onButtonClick}>more users</ButtonWithLabel>}
-      {tabForm && <Form onUserAddition={handleUserAddition}  />}
-      {addedUser && (
-                <MemberCard
-                    name={addedUser.name}
-                    phone={addedUser.phone}
-                    username={addedUser.username}
-                    website={addedUser.website}
-                />
+    return (
+        <div className="App">
+            <Tabs onChange={setTabForm}/>
+            {tabForm
+                ? <Form onUserAddition={handleUserAddition} /> 
+                : <>
+                    {[...users, ...moreUsers].map(user => <MemberCard {...user} />)}
+                    <ButtonWithLabel onClick={onButtonClick}>more users</ButtonWithLabel>
+                </>
+            }
+            {addedUser && (
+                <MemberCard {...addedUser} />
             )}
-    </div>
-  );
+        </div>
+    );
 }

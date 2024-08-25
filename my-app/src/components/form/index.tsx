@@ -1,68 +1,61 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
-import './style.scss';
+import "./style.scss";
 
-interface FormProps {
-    onUserAddition: (user: any) => void; // Принимаем функцию для обновления состояния верхнего компонента
-}
+import { useState, FormEvent, ChangeEvent } from "react";
+import { FormProps } from "./types";
+import { UserProps } from "../memberCard/types";
+import { nameof } from "../../utils";
 
-const Form: React.FC<FormProps> = ({ onUserAddition }) => {
-	const [username, setUsername] = useState<string>('');
-	const [phone, setPhone] = useState<string>('');
-	const [website, setWebsite] = useState<string>('');
+const Form = ({ onUserAddition }: FormProps) => {
+    const [user, setUser] = useState<UserProps>({
+        username: '',
+        phone: '',
+        website: ''
+    });
 
-	const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setUsername(event.target.value);
-	};
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUser(prev => ({ 
+            ...prev, 
+            [e.target.name]: e.target.value 
+        }));
+    };
 
-	const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setPhone(event.target.value);
-	};
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
-	const handlewebsiteChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setWebsite(event.target.value);
-	};
+        fetch('https://jsonplaceholder.typicode.com/users', {
+            method: 'POST',
+            body: JSON.stringify(user),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+        .then((response) => response.json())
+        .then((user) => onUserAddition(user));
+    };
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		fetch('https://jsonplaceholder.typicode.com/users', {
-			method: 'POST',
-			body: JSON.stringify({
-				username,
-				phone,
-				website,
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-			},
-		})
-			.then((response) => response.json())
-			.then((user) => onUserAddition(user));
-	};
-
-	return (
-		<form onSubmit={handleSubmit} className="form-container">
-			<div>
-				<label>
-					Username:
-					<input type="text" value={username} onChange={handleUsernameChange} />
-				</label>
-			</div>
-			<div>
-				<label>
-					Phone:
-					<input type="text" value={phone} onChange={handlePhoneChange} />
-				</label>
-			</div>
-			<div>
-				<label>
-					Website:
-					<input type="email" value={website} onChange={handlewebsiteChange} />
-				</label>
-			</div>
-			<button className='button' type="submit">Submit</button>
-		</form>
-	);
+    return (
+        <form onSubmit={handleSubmit} className="form-container">
+            <div>
+                <label>
+                    Username:
+                    <input type="text" name={nameof<UserProps>("username")} value={user.username} onChange={handleChange} />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Phone:
+                    <input type="text" name={nameof<UserProps>("phone")} value={user.phone} onChange={handleChange} />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Website:
+                    <input type="text" name={nameof<UserProps>("website")} value={user.website} onChange={handleChange} />
+                </label>
+            </div>
+            <button className="form-container__button" type="submit">Submit</button>
+        </form>
+    );
 };
 
 export default Form;
