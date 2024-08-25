@@ -2,22 +2,21 @@ import "./style.scss";
 
 import { useState, FormEvent, ChangeEvent } from "react";
 import { FormProps } from "./types";
+import { UserProps } from "../memberCard/types";
+import { nameof } from "../../utils";
 
 const Form = ({ onUserAddition }: FormProps) => {
-    const [username, setUsername] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
-    const [website, setWebsite] = useState<string>('');
+    const [user, setUser] = useState<UserProps>({
+        username: '',
+        phone: '',
+        website: ''
+    });
 
-    const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setUsername(event.target.value);
-    };
-
-    const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setPhone(event.target.value);
-    };
-
-    const handlewebsiteChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setWebsite(event.target.value);
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUser(prev => ({ 
+            ...prev, 
+            [e.target.name]: e.target.value 
+        }));
     };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -25,11 +24,7 @@ const Form = ({ onUserAddition }: FormProps) => {
 
         fetch('https://jsonplaceholder.typicode.com/users', {
             method: 'POST',
-            body: JSON.stringify({
-                username,
-                phone,
-                website,
-            }),
+            body: JSON.stringify(user),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             },
@@ -43,19 +38,19 @@ const Form = ({ onUserAddition }: FormProps) => {
             <div>
                 <label>
                     Username:
-                    <input type="text" value={username} onChange={handleUsernameChange} />
+                    <input type="text" name={nameof<UserProps>("username")} value={user.username} onChange={handleChange} />
                 </label>
             </div>
             <div>
                 <label>
                     Phone:
-                    <input type="text" value={phone} onChange={handlePhoneChange} />
+                    <input type="text" name={nameof<UserProps>("phone")} value={user.phone} onChange={handleChange} />
                 </label>
             </div>
             <div>
                 <label>
                     Website:
-                    <input type="text" value={website} onChange={handlewebsiteChange} />
+                    <input type="text" name={nameof<UserProps>("website")} value={user.website} onChange={handleChange} />
                 </label>
             </div>
             <button className="form-container__button" type="submit">Submit</button>
